@@ -1,28 +1,119 @@
-# Ignore environment and secrets everywhere
+# ===============================
+# Environment & Secrets
+# ===============================
+# Ignore all .env files anywhere
 .env
 .env*
 *.env
 
-# Node and Python environments
-node_modules/
-venv/
-.venv/
+# Backend specific environment
+backend/.env*
+backend/*.db
+backend/*.sqlite
+backend/*.sqlite3
+backend/*.log
+backend/*.pem
+backend/venv/
+backend/.venv/
 
-# Cache and build
-__pycache__/
+# Frontend specific environment
+frontend/.env*
+frontend/.env.local
+frontend/.env.production
+frontend/node_modules/
+
+# ===============================
+# Node.js / JavaScript / Next.js
+# ===============================
+# Node modules
+node_modules/
+frontend/node_modules/
+
+# Next.js build output
 .next/
+frontend/.next/
 out/
+frontend/out/
+
+# Production / build output
 dist/
 build/
 
-# Databases
-*.db
-*.sqlite
-*.sqlite3
+# ===============================
+# Python
+# ===============================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
 
-# OS junk
+# ===============================
+# IDEs / Editor / OS
+# ===============================
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.project
+.pydevproject
 .DS_Store
 Thumbs.db
+desktop.ini
 
-# Kubernetes artifacts
+# ===============================
+# Kubernetes / Docker / Helm
+# ===============================
+# Ignore PID files and temp runtime artifacts
 *.pid
+
+# Helm / Kubernetes secrets
+helm-chart/templates/secret.yaml
+helm/todo-ai-chatbot/templates/secrets.yaml
+*.backup
+*.backup2
+
+# Docker
+docker-compose.override.yml
+
+# ===============================
+# Logs / Testing
+# ===============================
+logs/
+*.log
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.hypothesis/
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# ===============================
+# Jupyter / Notebooks
+# ===============================
+.ipynb_checkpoints
+
+# ===============================
+# Misc
+# ===============================
+history/
+.claude/
+.specify/
