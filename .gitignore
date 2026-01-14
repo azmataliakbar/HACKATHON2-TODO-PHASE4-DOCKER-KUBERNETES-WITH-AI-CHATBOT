@@ -1,0 +1,28 @@
+# Ignore environment and secrets everywhere
+.env
+.env*
+*.env
+
+# Node and Python environments
+node_modules/
+venv/
+.venv/
+
+# Cache and build
+__pycache__/
+.next/
+out/
+dist/
+build/
+
+# Databases
+*.db
+*.sqlite
+*.sqlite3
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+# Kubernetes artifacts
+*.pid

@@ -1,0 +1,75 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "todo-ai-chatbot.backend.fullname" . }}
+  labels:
+    {{- include "todo-ai-chatbot.labels" . | nindent 4 }}
+    app: backend
+spec:
+  replicas: {{ .Values.backend.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "todo-ai-chatbot.selectorLabels" . | nindent 6 }}
+      app: backend
+  template:
+    metadata:
+      labels:
+        {{- include "todo-ai-chatbot.selectorLabels" . | nindent 8 }}
+        app: backend
+    spec:
+      containers:
+      - name: {{ .Chart.Name }}-backend
+        image: "{{ .Values.backend.image.repository }}:{{ .Values.backend.image.tag }}"
+        imagePullPolicy: {{ .Values.backend.image.pullPolicy }}
+        ports:
+        - containerPort: 8000
+        env:
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: {{ include "todo-ai-chatbot.backend.secret.name" . }}
+              key: database-url
+        - name: OPENAI_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: {{ include "todo-ai-chatbot.apikeys.secret.name" . }}
+              key: openai-api-key
+        - name: JWT_SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: {{ include "todo-ai-chatbot.auth.secret.name" . }}
+              key: jwt-secret-key
+        envFrom:
+        - configMapRef:
+            name: {{ include "todo-ai-chatbot.backend.configmap.name" . }}
+        resources:
+          {{- toYaml .Values.backend.resources | nindent 10 }}
+        livenessProbe:
+          httpGet:
+            path: /api/health
+            port: 8000
+          initialDelaySeconds: {{ .Values.backend.livenessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.backend.livenessProbe.periodSeconds }}
+        readinessProbe:
+          httpGet:
+            path: /api/health
+            port: 8000
+          initialDelaySeconds: {{ .Values.backend.readinessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.backend.readinessProbe.periodSeconds }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "todo-ai-chatbot.backend.service.name" . }}
+  labels:
+    {{- include "todo-ai-chatbot.labels" . | nindent 4 }}
+    app: backend
+spec:
+  selector:
+    {{- include "todo-ai-chatbot.selectorLabels" . | nindent 4 }}
+    app: backend
+  ports:
+    - protocol: TCP
+      port: {{ .Values.backend.service.port }}
+      targetPort: {{ .Values.backend.service.targetPort }}
+  type: {{ .Values.backend.service.type }}

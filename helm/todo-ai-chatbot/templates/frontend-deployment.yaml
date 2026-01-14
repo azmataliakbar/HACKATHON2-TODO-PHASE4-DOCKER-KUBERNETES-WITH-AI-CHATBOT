@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "todo-ai-chatbot.frontend.fullname" . }}
+  labels:
+    {{- include "todo-ai-chatbot.labels" . | nindent 4 }}
+    app: frontend
+spec:
+  replicas: {{ .Values.frontend.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "todo-ai-chatbot.selectorLabels" . | nindent 6 }}
+      app: frontend
+  template:
+    metadata:
+      labels:
+        {{- include "todo-ai-chatbot.selectorLabels" . | nindent 8 }}
+        app: frontend
+    spec:
+      containers:
+      - name: {{ .Chart.Name }}-frontend
+        image: "{{ .Values.frontend.image.repository }}:{{ .Values.frontend.image.tag }}"
+        imagePullPolicy: {{ .Values.frontend.image.pullPolicy }}
+        ports:
+        - containerPort: 3000
+        env:
+        - name: NEXT_PUBLIC_API_URL
+          value: {{ .Values.frontend.config.apiUrl | quote }}
+        resources:
+          {{- toYaml .Values.frontend.resources | nindent 10 }}
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 3000
+          initialDelaySeconds: {{ .Values.frontend.livenessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.frontend.livenessProbe.periodSeconds }}
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 3000
+          initialDelaySeconds: {{ .Values.frontend.readinessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.frontend.readinessProbe.periodSeconds }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "todo-ai-chatbot.frontend.service.name" . }}
+  labels:
+    {{- include "todo-ai-chatbot.labels" . | nindent 4 }}
+    app: frontend
+spec:
+  selector:
+    {{- include "todo-ai-chatbot.selectorLabels" . | nindent 4 }}
+    app: frontend
+  ports:
+    - protocol: TCP
+      port: {{ .Values.frontend.service.port }}
+      targetPort: {{ .Values.frontend.service.targetPort }}
+  type: {{ .Values.frontend.service.type }}
