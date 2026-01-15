@@ -146,3 +146,10 @@ The application can be configured through the Helm values.yaml file or by settin
 
 #### Phase 4 (SQLite - Docker Compose):
 #### - Ports: 30081 (frontend), 8001 (backend)
+
+### 🎯 Test Commands for Phase 4 Chatbot:
+### Try these in your working chatbot:
+### "add buy groceries for dinner"
+### "show all my tasks"
+### "mark task 1 complete"
+### "delete task 1"
