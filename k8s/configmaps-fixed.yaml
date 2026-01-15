@@ -1,0 +1,18 @@
+﻿apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: backend-config
+  namespace: todo-chatbot
+data:
+  ALLOWED_ORIGINS: "http://localhost:30080,http://127.0.0.1:30080"
+  ENVIRONMENT: "production"
+  BACKEND_PORT: "8000"
+  HEALTH_CHECK_PATH: "/health"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: frontend-config
+  namespace: todo-chatbot
+data:
+  NEXT_PUBLIC_API_URL: "http://localhost:30800"

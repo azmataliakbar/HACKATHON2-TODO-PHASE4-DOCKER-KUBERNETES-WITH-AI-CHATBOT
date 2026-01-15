@@ -1,0 +1,60 @@
+﻿apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-deployment
+  namespace: todo-chatbot
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+      - name: backend
+        image: backend:latest
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 8000
+        env:
+        - name: DATABASE_URL
+          value: "sqlite:///todo.db"
+        - name: BACKEND_PORT
+          value: "8000"
+        - name: FRONTEND_URL
+          value: "http://localhost:30080"
+        - name: CORS_ORIGINS
+          value: "http://localhost:30080,http://127.0.0.1:30080"
+        - name: HEALTH_CHECK_PATH
+          value: "/health"
+        resources:
+          limits:
+            cpu: 500m
+            memory: 512Mi
+          requests:
+            cpu: 250m
+            memory: 256Mi
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 5
+          periodSeconds: 5
+        volumeMounts:
+        - name: todo-db-storage
+          mountPath: /app/todo.db
+          subPath: todo.db
+      volumes:
+      - name: todo-db-storage
+        hostPath:
+          path: /tmp/todo.db
+          type: FileOrCreate
