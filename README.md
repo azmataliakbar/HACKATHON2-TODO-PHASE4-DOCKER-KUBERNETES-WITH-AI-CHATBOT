@@ -113,3 +113,13 @@ The application can be configured through the Helm values.yaml file or by settin
 - Never commit actual secrets to version control
 - Use Kubernetes secrets for sensitive data like API keys and database URLs
 - Ensure proper RBAC policies are in place in production
+
+# 🔗 Phase 4 URLs:
+# Frontend: http://localhost:30081
+# Start-Process "http://localhost:30081"
+
+# Backend API: http://localhost:8001/api/
+
+# API Health: http://localhost:8001/api/health
+
+# Swagger Docs: http://localhost:8001/docs
